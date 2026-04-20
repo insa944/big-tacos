@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIG TACOS — Street Food Authentique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0d0c0a;
+    --deep: #141210;
+    --orange: #f4600c;
+    --fire: #ff3d00;
+    --gold: #f5b800;
+    --cream: #fdf3e3;
+    --muted: #a09070;
+    --green: #2d5a27;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--orange);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--orange);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(8px);
+    background: rgba(13,12,10,0.7);
+    border-bottom: 1px solid rgba(244,96,12,0.15);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--orange);
+  }
+  .logo span { color: var(--gold); }
+  nav ul { list-style: none; display: flex; gap: 36px; }
+  nav ul a {
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  nav ul a:hover { opacity: 1; color: var(--orange); }
+  .nav-cta {
+    background: var(--orange);
+    color: var(--black) !important;
+    opacity: 1 !important;
+    padding: 10px 24px;
+    font-weight: 700;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--gold) !important; color: var(--black) !important; }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    padding: 140px 48px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Background grain + gradient */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 70% 50%, rgba(244,96,12,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 20% 80%, rgba(245,184,0,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .hero-text { position: relative; z-index: 2; }
+
+  .badge {
+    display: inline-block;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease forwards;
+    opacity: 0;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 9vw, 130px);
+    line-height: 0.92;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    animation: fadeUp 0.8s 0.1s ease forwards;
+    opacity: 0;
+  }
+  .hero-title .accent { color: var(--orange); display: block; }
+  .hero-title .italic-line {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    color: var(--gold);
+    font-size: clamp(56px, 7vw, 100px);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(253,243,227,0.6);
+    max-width: 420px;
+    margin: 28px 0 44px;
+    animation: fadeUp 0.8s 0.2s ease forwards;
+    opacity: 0;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; align-items: center;
+    animation: fadeUp 0.8s 0.3s ease forwards;
+    opacity: 0;
+  }
+
+  .btn-primary {
+    background: var(--orange);
+    color: var(--black);
+    padding: 16px 36px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  }
+  .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+
+  .btn-ghost {
+    color: var(--cream);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    opacity: 0.7; transition: opacity 0.2s;
+  }
+  .btn-ghost:hover { opacity: 1; }
+  .btn-ghost .arrow {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(253,243,227,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover .arrow { border-color: var(--orange); transform: translateX(4px); }
+
+  /* Hero visual */
+  .hero-visual {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: flex-end;
+    animation: fadeIn 1s 0.4s ease forwards; opacity: 0;
+  }
+
+  .taco-plate {
+    width: 100%;
+    max-width: 520px;
+    position: relative;
+  }
+
+  .taco-emoji-stage {
+    font-size: 180px;
+    text-align: center;
+    display: block;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 30px 60px rgba(244,96,12,0.4));
+    line-height: 1;
+  }
+
+  /* Orbiting badges */
+  .orbit-badge {
+    position: absolute;
+    background: var(--deep);
+    border: 1px solid rgba(244,96,12,0.3);
+    padding: 10px 18px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .orbit-badge strong { color: var(--orange); font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
+  .ob1 { top: 10%; right: -20px; animation: floatBadge 5s 0s ease-in-out infinite; }
+  .ob2 { bottom: 15%; left: -30px; animation: floatBadge 5s 1.2s ease-in-out infinite; }
+
+  .stats-row {
+    display: flex; gap: 40px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(253,243,227,0.1);
+  }
+  .stat span { display: block; }
+  .stat .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--orange);
+    letter-spacing: 1px;
+  }
+  .stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; }
+
+  /* ─── TICKER ─── */
+  .ticker {
+    background: var(--orange);
+    padding: 14px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-track {
+    display: inline-flex; gap: 0;
+    animation: ticker 18s linear infinite;
+  }
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--black);
+    padding: 0 40px;
+  }
+  .ticker-dot { color: rgba(0,0,0,0.3); }
+
+  /* ─── MENU ─── */
+  .menu-section {
+    padding: 100px 48px;
+    position: relative;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 1;
+    margin-bottom: 60px;
+  }
+  .section-title em {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .menu-card {
+    background: var(--deep);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+    border: 1px solid rgba(253,243,227,0.05);
+  }
+  .menu-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .menu-card:hover { background: #1a1714; }
+  .menu-card:hover::before { transform: scaleX(1); }
+
+  .card-emoji { font-size: 56px; margin-bottom: 20px; display: block; }
+  .card-tag {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 8px;
+  }
+  .card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .card-desc {
+    font-size: 14px; line-height: 1.7;
+    color: rgba(253,243,227,0.55);
+    margin-bottom: 28px;
+  }
+  .card-footer { display: flex; justify-content: space-between; align-items: center; }
+  .card-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--gold);
+  }
+  .card-order {
+    background: transparent;
+    border: 1px solid rgba(244,96,12,0.5);
+    color: var(--orange);
+    padding: 8px 20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .card-order:hover { background: var(--orange); color: var(--black); }
+
+  /* Featured card */
+  .menu-card.featured {
+    background: var(--orange);
+    grid-row: span 1;
+  }
+  .menu-card.featured .card-tag { color: rgba(13,12,10,0.6); }
+  .menu-card.featured .card-name { color: var(--black); }
+  .menu-card.featured .card-desc { color: rgba(13,12,10,0.7); }
+  .menu-card.featured .card-price { color: var(--black); }
+  .menu-card.featured .card-order {
+    border-color: rgba(13,12,10,0.4);
+    color: var(--black);
+  }
+  .menu-card.featured .card-order:hover { background: var(--black); color: var(--orange); }
+  .menu-card.featured::before { background: var(--gold); }
+
+  /* ─── STORY ─── */
+  .story-section {
+    padding: 100px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    border-top: 1px solid rgba(253,243,227,0.08);
+  }
+
+  .story-visual {
+    position: relative;
+  }
+  .story-big-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(100px, 14vw, 200px);
+    line-height: 0.85;
+    color: rgba(253,243,227,0.04);
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+    top: -20px; left: -10px;
+  }
+  .story-emoji-stack {
+    font-size: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+    padding: 40px;
+  }
+  .story-emoji-stack span { display: block; animation: float 4s ease-in-out infinite; }
+  .story-emoji-stack span:nth-child(2) { animation-delay: 0.5s; margin-left: 60px; }
+  .story-emoji-stack span:nth-child(3) { animation-delay: 1s; margin-left: 20px; }
+
+  .story-text .section-label { margin-bottom: 16px; }
+  .story-text h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 64px);
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+  .story-text h2 em { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--gold); }
+  .story-text p {
+    font-size: 15px; line-height: 1.8;
+    color: rgba(253,243,227,0.6);
+    margin-bottom: 20px;
+  }
+  .pillars {
+    display: flex; flex-direction: column; gap: 16px;
+    margin-top: 36px;
+  }
+  .pillar {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 18px 20px;
+    background: var(--deep);
+    border-left: 3px solid var(--orange);
+  }
+  .pillar-icon { font-size: 24px; }
+  .pillar-text strong { display: block; font-size: 14px; letter-spacing: 1px; margin-bottom: 4px; }
+  .pillar-text span { font-size: 13px; color: rgba(253,243,227,0.5); }
+
+  /* ─── TESTIMONIALS ─── */
+  .reviews-section {
+    padding: 100px 48px;
+    background: var(--deep);
+  }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+  .review-card {
+    padding: 32px;
+    border: 1px solid rgba(253,243,227,0.08);
+    position: relative;
+  }
+  .review-stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; letter-spacing: 3px; }
+  .review-text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: rgba(253,243,227,0.85);
+  }
+  .review-author { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .review-quote {
+    position: absolute; top: 20px; right: 24px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 60px;
+    color: rgba(244,96,12,0.12);
+    line-height: 1;
+  }
+
+  /* ─── CTA BAND ─── */
+  .cta-band {
+    padding: 100px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-band::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 100% at 50% 50%, rgba(244,96,12,0.15) 0%, transparent 70%);
+  }
+  .cta-band h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 9vw, 120px);
+    line-height: 0.9;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 32px;
+  }
+  .cta-band h2 span { color: var(--orange); display: block; }
+  .cta-band h2 em { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--gold); }
+  .cta-band p {
+    font-size: 16px;
+    color: rgba(253,243,227,0.55);
+    margin-bottom: 48px;
+    position: relative; z-index: 2;
+  }
+  .cta-actions { display: flex; gap: 16px; justify-content: center; position: relative; z-index: 2; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 48px;
+    border-top: 1px solid rgba(253,243,227,0.08);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  footer p { font-size: 13px; color: var(--muted); letter-spacing: 1px; }
+  .footer-socials { display: flex; gap: 20px; }
+  .footer-socials a {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-socials a:hover { color: var(--orange); }
+
+  .ameilo-bar {
+    background: #0a0908;
+    border-top: 1px solid rgba(253,243,227,0.05);
+    text-align: center;
+    padding: 14px 24px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(253,243,227,0.25);
+  }
+  .ameilo-bar a {
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s;
+  }
+  .ameilo-bar a:hover { color: var(--gold); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-16px); }
+  }
+  @keyframes floatBadge {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50%       { transform: translateY(-8px) rotate(1deg); }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav ul { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 120px 24px 60px; }
+    .hero-visual { align-items: center; }
+    .taco-emoji-stage { font-size: 120px; }
+    .menu-grid { grid-template-columns: 1fr; }
+    .story-section { grid-template-columns: 1fr; padding: 60px 24px; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .menu-section, .reviews-section, .cta-band { padding: 60px 24px; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }    nav { padding: 16px 24px; }
+    .stats-row { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Curseur custom -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">BIG <span>TACOS</span></div>
+  <ul>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#story">Notre histoire</a></li>
+    <li><a href="#reviews">Avis</a></li>
+    <li><a href="#order" class="nav-cta">Commander</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="badge">🌮 Street Food Authentique — Thiès</div>
+    <h1 class="hero-title">
+      <span>TACOS</span>
+      <span class="italic-line">qui brûlent</span>
+      <span class="accent">L'AME</span>
+    </h1>
+    <p class="hero-sub">
+      Des recettes transmises de génération en génération. Des épices sélectionnées à la main. Une explosion de saveurs à chaque bouchée.
+    </p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-primary">Voir le menu</a>
+      <a href="#story" class="btn-ghost">
+        Notre story
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="taco-plate">
+      <span class="taco-emoji-stage">🌮</span>
+      <div class="orbit-badge ob1">
+        <strong>+500</strong><br>clients satisfaits
+      </div>
+      <div class="orbit-badge ob2">
+        <strong>100%</strong><br>ingrédients frais
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat">
+        <span class="num">12</span>
+        <span class="label">Recettes</span>
+      </div>
+      <div class="stat">
+        <span class="num">4.9★</span>
+        <span class="label">Note moyenne</span>
+      </div>
+      <div class="stat">
+        <span class="num">30min</span>
+        <span class="label">Livraison</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ticker-item">BIG TACOS</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">FAIT MAISON</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">LIVRAISON RAPIDE</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">ÉPICES AUTHENTIQUES</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">BIG TACOS</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">FAIT MAISON</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">LIVRAISON RAPIDE</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">ÉPICES AUTHENTIQUES</span><span class="ticker-item ticker-dot">✦</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="ticker-item">BIG TACOS</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">FAIT MAISON</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">LIVRAISON RAPIDE</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">ÉPICES AUTHENTIQUES</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">BIG TACOS</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">FAIT MAISON</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">LIVRAISON RAPIDE</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">ÉPICES AUTHENTIQUES</span><span class="ticker-item ticker-dot">✦</span>
+  </div>
+</div>
+
+<!-- MENU -->
+<section class="menu-section" id="menu">
+  <div class="section-label">— Notre sélection</div>
+  <h2 class="section-title">Les <em>classiques</em><br>qui font revenir</h2>
+
+  <div class="menu-grid" style="grid-template-columns: repeat(2,1fr); max-width: 800px; margin: 0 auto;">
+    <div class="menu-card">
+      <span class="card-emoji">🌮</span>
+      <div class="card-tag">L'essentiel</div>
+      <div class="card-name">Tacos Simple</div>
+      <p class="card-desc">Le classique qui ne se rate jamais. Garniture généreuse, sauce maison, tortilla fraîche. Simple, bon, efficace.</p>
+      <div class="card-footer">
+        <span class="card-price">1 000 F</span>
+        <button class="card-order">Commander</button>
+      </div>
+    </div>
+
+    <div class="menu-card featured">
+      <span class="card-emoji">💥</span>
+      <div class="card-tag">Le meilleur choix</div>
+      <div class="card-name">Big Tacos</div>
+      <p class="card-desc">Le format XXL pour les vrais. Double garniture, sauce signature, tortilla maxi. Tu ne seras plus jamais à court.</p>
+      <div class="card-footer">
+        <span class="card-price">2 000 F</span>
+        <button class="card-order">Commander</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story-section" id="story">
+  <div class="story-visual">
+    <div class="story-big-text">RAW</div>
+    <div class="story-emoji-stack">
+      <span>🌶️</span>
+      <span>🧅</span>
+      <span>🥑</span>
+    </div>
+  </div>
+  <div class="story-text">
+    <div class="section-label">— Notre philosophie</div>
+    <h2>Pas de <em>shortcuts</em>.<br>Juste du vrai.</h2>
+    <p>Chez Taco Loco, chaque taco est une promesse. Celle de ne jamais sacrifier la qualité pour la vitesse. Nos marinades reposent 24h. Nos sauces sont préparées chaque matin.</p>
+    <p>On est obsédés par un seul truc : que ta première bouchée te transporte directement dans une rue de Mexico.</p>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">🌿</div>
+        <div class="pillar-text">
+          <strong>Ingrédients frais tous les jours</strong>
+          <span>Pas de surgélé, pas de compromis — zéro excuses.</span>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🔥</div>
+        <div class="pillar-text">
+          <strong>Épices importées directement</strong>
+          <span>Achiote, chipotle, ancho — sélectionnés à la source.</span>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">⚡</div>
+        <div class="pillar-text">
+          <strong>Livraison en 30 minutes max</strong>
+          <span>Chaud, frais, intact — ou c'est remboursé.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section" id="reviews">
+  <div class="section-label">— Ce qu'ils en disent</div>
+  <h2 class="section-title">Des avis qui ne<br><em>mentent pas</em></h2>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">Le Big Tacos à 2000F c'est imbattable. Généreux, chaud, livré vite. Je commande presque tous les soirs.</p>
+      <div class="review-author">— Moussa D., Thiès</div>
+      <div class="review-quote">"</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">J'ai pris le simple pour tester. Franchement pour 1000F c'est une tuerie. Big Tacos ne déçoit pas.</p>
+      <div class="review-author">— Fatou N., Thiès</div>
+      <div class="review-quote">"</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">Livraison rapide, taco encore chaud à l'arrivée. La sauce est vraiment bonne. Je recommande à tout le monde.</p>
+      <div class="review-author">— Cheikh B., Thiès</div>
+      <div class="review-quote">"</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-band" id="order">
+  <h2>
+    T'as encore
+    <em>faim ?</em>
+    <span>COMMANDE.</span>
+  </h2>
+  <p>Disponible à Thiès — Livraison 7j/7</p>
+  <div class="cta-actions">
+    <a href="tel:+221711551446" class="btn-primary">Appeler maintenant</a>
+    <a href="#menu" class="btn-ghost">
+      Voir le menu
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="logo" style="margin-bottom:8px">BIG <span>TACOS</span></div>
+    <p>© 2025 Big Tacos — Street Food Authentique</p>
+  </div>
+  <div class="footer-socials">
+    <a href="https://wa.me/221711551446">WhatsApp</a>
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+  </div>
+</footer>
+<div class="ameilo-bar">
+  Site conçu par&nbsp;<a href="https://wa.me/221756367023" target="_blank" rel="noopener">Ameilo Agence</a>
+</div>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2)'; ring.style.transform = 'translate(-50%,-50%) scale(1.5)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.transform = 'translate(-50%,-50%) scale(1)'; });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.menu-card, .review-card, .pillar').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Commander buttons
+  document.querySelectorAll('.card-order').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const name = this.closest('.menu-card').querySelector('.card-name').textContent;
+      const price = this.closest('.menu-card').querySelector('.card-price').textContent;
+      const msg = `🌮 Commande : ${name} — ${price}\nBonjour, je voudrais commander un ${name} s'il vous plaît !`;
+      window.open(`https://wa.me/221711551446?text=${encodeURIComponent(msg)}`, '_blank');
+    });
+  });
+</script>
+</body>
+</html>
